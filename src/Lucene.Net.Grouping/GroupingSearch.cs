@@ -38,9 +38,9 @@ namespace Lucene.Net.Grouping
 
 		private bool includeMaxScore = true;
 
-		private double maxCacheRAMMB;
+		private double? maxCacheRAMMB;
 
-		private int maxDocsToCache;
+		private int? maxDocsToCache;
 
 		private bool cacheScores;
 
@@ -157,20 +157,20 @@ namespace Lucene.Net.Grouping
 			}
 		    if (groupEndDocs != null)
 		    {
-		        return (TopGroups<T>)GroupByDocBlock(searcher, filter, query, groupOffset, groupLimit);
+		        return GroupByDocBlock(searcher, filter, query, groupOffset, groupLimit) as TopGroups<T>;
 		    }
 		    throw new InvalidOperationException("Either groupField, groupFunction or groupEndDocs must be set.");
 		}
 
 	    // This can't happen...
 		
-		protected internal virtual TopGroups<> GroupByFieldOrFunction(IndexSearcher searcher
+		protected internal virtual TopGroups<T> GroupByFieldOrFunction<T>(IndexSearcher searcher
 			, Filter filter, Query query, int groupOffset, int groupLimit)
 		{
 			int topN = groupOffset + groupLimit;
-			AbstractFirstPassGroupingCollector firstPassCollector;
-			AbstractAllGroupsCollector allGroupsCollector;
-			AbstractAllGroupHeadsCollector<> allGroupHeadsCollector;
+			AbstractFirstPassGroupingCollector<T> firstPassCollector;
+			AbstractAllGroupsCollector<T> allGroupsCollector;
+			AbstractAllGroupHeadsCollector<T> allGroupHeadsCollector;
 			if (groupFunction != null)
 			{
 				firstPassCollector = new FunctionFirstPassGroupingCollector(groupFunction, valueSourceContext
